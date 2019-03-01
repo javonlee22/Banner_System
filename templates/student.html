@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+font-family: Arial;
+background: #fdb927;
+
+}
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #004684;
+}
+
+/* Style the buttons inside the tab */
+#button {
+  color: white;
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  background-color: white;
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+.hide{
+  display:none;
+}
+.show{
+  display:block;
+}
+
+</style>
+  <title> Student </title>
+</head>
+
+<body>
+
+  <h2>Welcome {{first}} {{last}}</h2>
+
+  <div class="tab">
+    <button id="button" class="tablinks" onclick="studentTab(event, 'Courses')">Courses</button>
+    <button id="button" class="tablinks" onclick="studentTab(event, 'PersonalInfo')">Personal Information</button>
+    <button id="button" class="tablinks" onclick="studentTab(event, 'BalanceInfo')">Account Balance </button>
+
+  </div>
+
+
+  <div id="Courses" class="tabcontent">
+    <p>Professors: </p>
+    <table id='table'>
+      <tr>
+        <td>First Name</td>
+        <td>Last Name</td>
+        <td>Email</td>
+        <td>Office Phone #</td>
+      </tr>
+      {%for professor in professors%}
+      <tr>
+        <td>{{professor.first_name}}</td>
+        <td>{{professor.last_name}}</td>
+        <td>{{professor.email}}</td>
+        <td>{{professor.phone_number}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div id="PersonalInfo" class="tabcontent">
+    <p>Banner ID: {{banner}}</p>
+    <p>First Name: {{first}}</p>
+    <p>Last Name: {{last}}</p>
+    <form method="post">
+      Personal Address: {{address}}
+      <input type="button" name="address" value="Update" onclick="onAddressClick()" />
+      <input class="hide" type="text" id="addressInput" value="" />
+      <!--<input class="hide" type="submit" id="addressInput" value="Submit">-->
+      <p>Email: {{email}}</p>
+
+      Phone Number: {{phone}}
+      <input type="button" name="number" value="Update" onclick="onNumberClick()" />
+      <input class="hide" type="text" id="phoneInput" value="" />
+      <!--<input class="hide" type="submit" id="phoneInput" value="Submit">-->
+    </form>
+  </div>
+
+  <div id="BalanceInfo" class="tabcontent">
+    <p>Balance Due: ${{balance}}</p>
+  </div>
+
+
+
+
+  </div>
+
+  <script>
+    function studentTab(evt, studTab) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(studTab).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    function onAddressClick() {
+      document.getElementById('addressInput').className = "show";
+    }
+
+    function onNumberClick() {
+      document.getElementById('phoneInput').className = "show";
+    }
+  </script>

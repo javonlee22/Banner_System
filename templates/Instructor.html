@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<script type="text/javascript" src="validate.js"></script>-->
+  <style>
+    body {
+font-family: Arial;
+background: #fdb927;
+
+}
+#table {
+	color:white;
+	padding: 20px;
+	background-color: #004684;
+	margin-left: auto;
+	margin-right: auto;
+	/*width: 20%*/
+	
+}
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #004684;
+}
+
+/* Style the buttons inside the tab */
+#button {
+  color: white;
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+#farbutton {
+  color: white;
+  background-color: inherit;
+  float: right;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  background-color: white;
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+</style>
+  <title> Instructor </title>
+</head>
+
+<body>
+
+  <h2>Dr. {{last}}</h2>
+
+  <div class="tab">
+    <button id="button" class="tablinks" onclick="instructTab(event, 'Courses')">Active Students</button>
+    <button id="button" class="tablinks" onclick="instructTab(event, 'PersonalInfo')">Personal Information</button>
+    <button id="farbutton" class="tablinks" onclick="instructTab(event, 'New Student')"> + New Student</button>
+  </div>
+
+
+  <div id="Courses" class="tabcontent">
+    <p>Students: </p>
+    <table id='studentTable'>
+      <tr>
+        <td>Banner</td>
+        <td>First Name</td>
+        <td>Last Name</td>
+        <td>Email</td>
+        <td>GPA</td>
+        <td>Credit Hours</td>
+        <td>Balance</td>
+      </tr>
+      {%for student in students%}
+      <tr>
+        <td>{{student.banner}}</td>
+        <td>{{student.first_name}}</td>
+        <td>{{student.last_name}}</td>
+        <td>{{student.email}}</td>
+        <td>{{student.gpa}}</td>
+        <td>{{student.credit_hours}}</td>
+        <td>${{student.balance}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div id="PersonalInfo" class="tabcontent">
+    <p>First Name: {{first}}</p>
+    <p>Last Name: {{last}}</p>
+    <p>Banner ID: {{banner}}</p>
+    <p>Email: {{email}}</p>
+    <p>Personal Address: {{address}}</p>
+    <p>Phone Number: {{phone}}</p>
+
+
+  </div>
+
+  <div id="New Student" class="tabcontent">
+    <form method="post" action="/create_student" name="StudentRegistration" onsubmit="return(validate());">
+      <table id="table">
+        <tr>
+          <td colspan=2>
+            <center>
+              <font size=4><b>Student Registration Form</b></font>
+            </center>
+          </td>
+        </tr>
+        <tr>
+          <td>First Name</td>
+          <td><input type=text name=first_name id="firstName" size="30"></td>
+        </tr>
+        <tr>
+          <td>Last Name</td>
+          <td><input type=text name=last_name id="lastName" size="30"></td>
+        </tr>
+        <tr>
+          <td>Personal Address</td>
+          <td><input type="text" name="address" id="address" size="30"></td>
+        </tr>
+        <tr>
+          <td>City</td>
+          <td><input type="text" name="city" id="city" size="30"></td>
+        </tr>
+        <tr>
+          <td>State</td>
+          <td><input type="text" name="state" id="State" size="30"></td>
+        </tr>
+        <tr>
+          <td>Zip Code</td>
+          <td><input type="text" name="zip_code" id="zipcode" size="30"></td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td><input type="text" name="email" id="emailid" size="30"></td>
+        </tr>
+        <tr>
+          <td>Phone Number</td>
+          <td><input type="text" name="phone_number" id="mobileno" size="30"></td>
+        </tr>
+        <tr>
+          <td>Date of Birth</td>
+          <td><label for="dob"></label><input type="date" name="dob" id="dob"></td>
+          </select></td>
+        </tr>
+        <tr>
+          <td>Banner Number </td>
+          <td><input type="text" name="banner" id="banner" size="30"></td>
+        </tr>
+        <tr>
+          <td>Password</td>
+          <td><input type="text" name="password" id="banner" size="30"></td>
+        </tr>
+        <tr>
+          <td>Balance</td>
+          <td>$<input type="text" name="balance" id="banner" size="30"></td>
+        </tr>
+        <tr>
+          <td><input type="reset"></td>
+          <td colspan="2"><input type="submit" value="Submit Form" /></td>
+        </tr>
+      </table>
+    </form>
+  </div>
+
+  <script>
+    function instructTab(evt, instructorTab) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(instructorTab).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    function validate() {
+      if (document.StudentRegistration.firstName.value == "") {
+        alert("Please enter your First Name!");
+        document.StudentRegistration.firstName.focus();
+        return false;
+      }
+      if (document.StudentRegistration.lastName.value == "") {
+        alert("Please enter your Last Name!");
+        document.StudentRegistration.lastName.focus();
+        return false;
+      }
+      if (document.StudentRegistration.address.value == "") {
+        alert("Please enter your Address!");
+        document.StudentRegistration.address.focus();
+        return false;
+      }
+      if (document.StudentRegistration.city.value == "") {
+        alert("Please enter your City!");
+        document.StudentRegistration.city.focus();
+        return false;
+      }
+      if ((document.StudentRegistration.state.value == "")) {
+        alert("Please enter your State!");
+        document.StudentRegistration.state.focus();
+
+        return false;
+      }
+      if (document.StudentRegistration.zipcode.value == "" ||
+        isNaN(document.StudentRegistration.zipcode.value) ||
+        document.StudentRegistration.zipcode.value.length != 5) {
+        alert("Please enter a zipcode in the format ######.");
+        document.StudentRegistration.zipcode.focus();
+        return false;
+      }
+      var email = document.StudentRegistration.emailid.value;
+      atpos = email.indexOf("@");
+      dotpos = email.lastIndexOf(".");
+      if (email == "" || atpos < 1 || (dotpos - atpos < 2)) {
+        alert("Please enter a correct email address")
+        document.StudentRegistration.emailid.focus();
+        return false;
+      }
+      if (document.StudentRegistration.mobileno.value == "" ||
+        isNaN(document.StudentRegistration.mobileno.value) ||
+        document.StudentRegistration.mobileno.value.length != 10) {
+        alert("Please enter a 10 digit phone number!");
+        document.StudentRegistration.mobileno.focus();
+        return false;
+      }
+      if (document.StudentRegistration.sex.value == "-1") {
+        alert("Please chose an option!");
+        document.StudentRegistration.sex.focus();
+        return false;
+      }
+      if (document.StudentRegistration.banner.value == "" ||
+        isNaN(document.StudentRegistration.banner.value) ||
+        document.StudentRegistration.banner.value.length != 9) {
+        alert("Please enter a 9 digit banner number.");
+        document.StudentRegistration.banner.focus();
+        return false;
+      }
+      if (document.StudentRegistration.dob.value == null) {
+        alert("Please enter your Date of Birth!");
+        document.StudentRegistration.dob.focus();
+        return false;
+      }
+
+      return (true);
+    }
+  </script>
+</body>
+
+</html>

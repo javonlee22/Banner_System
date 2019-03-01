@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width" />
+  <title>Login</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- <link rel="stylesheet" href="style.css" /> -->
+  <style>
+      body{
+        background-color: #004684;
+      }
+    #border {
+        /*margin: auto;*/
+        position: fixed;
+        top: 50%;
+        left: 50%;
+       margin-top: -100px;
+        margin-left: -100px;
+        padding: 50px;
+        border-radius: 15px;
+        background: #fdb927;
+    }
+    #form{
+       color:#50309b;
+        text-align:center;
+    }
+    #test {
+        color: gray;
+    }
+    </style>
+</head>
+
+<body>
+  <div id="border">
+    <form id="form" method="post" action="/login">
+      <br>Banner ID: <br>
+      <input type="text" name="banner">
+      <br>Password: <br>
+      <input type="text" name="password"><br>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</body>
+
+</html>
