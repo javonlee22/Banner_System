@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify,render_template,redirect,url_for,session
-from flask_pymongo import PyMongo
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.exc import IntegrityError
@@ -7,7 +6,7 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-#Connection to the MySQL database instance
+#Connection to the MySQL database instance              #<username>:<password>
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:goaggiepride22@localhost:3306/banner_system'
 db = SQLAlchemy(app)
 #Creates a random secret key for encryption
