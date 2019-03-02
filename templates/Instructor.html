@@ -10,6 +10,9 @@ font-family: Arial;
 background: #fdb927;
 
 }
+#studentTable,td{
+  border: 1px solid #004684;
+}
 #table {
 	color:white;
 	padding: 20px;
@@ -69,6 +72,13 @@ background: #fdb927;
   border: 1px solid #ccc;
   border-top: none;
 }
+.form-popup {
+  display: none;
+  position: fixed;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
 
 </style>
   <title> Instructor </title>
@@ -77,6 +87,7 @@ background: #fdb927;
 <body>
 
   <h2>Dr. {{last}}</h2>
+  <h3>Last Login: {{time}}</h3>
 
   <div class="tab">
     <button id="button" class="tablinks" onclick="instructTab(event, 'Courses')">Active Students</button>
@@ -96,19 +107,62 @@ background: #fdb927;
         <td>GPA</td>
         <td>Credit Hours</td>
         <td>Balance</td>
+        <td>Edit</td>
       </tr>
       {%for student in students%}
       <tr>
-        <td>{{student.banner}}</td>
-        <td>{{student.first_name}}</td>
-        <td>{{student.last_name}}</td>
-        <td>{{student.email}}</td>
-        <td>{{student.gpa}}</td>
-        <td>{{student.credit_hours}}</td>
-        <td>${{student.balance}}</td>
+        <td id="banner{{loop.index}}">{{student.banner}}</td>
+        <td id="first{{loop.index}}">{{student.first_name}}</td>
+        <td id="last{{loop.index}}">{{student.last_name}}</td>
+        <td id="email{{loop.index}}">{{student.email}}</td>
+        <td id="gpa{{loop.index}}">{{student.gpa}}</td>
+        <td id="credit{{loop.index}}">{{student.credit_hours}}</td>
+        <td id="balance{{loop.index}}">${{student.balance}}</td>
+        <td><button class="open-button" id="edit{{loop.index}}" onclick="openForm(this.id)">Edit</button></td>
       </tr>
       {% endfor %}
     </table>
+    <div class="form-popup" id="myForm">
+      <form action="/instructor_update" name="studentUpdating" onsubmit="return(validateUpdate());" method="post">
+        <table id="table">
+          <tr>
+            <td colspan=2>
+              <center>
+                <font size=4><b>Edit Student</b></font>
+              </center>
+            </td>
+          </tr>
+          <tr>
+            <td>First Name</td>
+            <td><input type="text" name=popFirst id="popFirst" size="30" readonly></td>
+          </tr>
+          <tr>
+            <td>Last Name</td>
+            <td><input type="text" name=poplast id="poplast" size="30" readonly></td>
+          </tr>
+          <tr>
+            <td>Banner Number</td>
+            <td><input type="text" name=popBanner id="popBanner" size="30" readonly></td>
+          </tr>
+          <tr>
+            <td>GPA</td>
+            <td><input type="text" name=gpa id="gpa" size="30"></td>
+          </tr>
+          <tr>
+            <td>Balance</td>
+            <td>$<input type="text" name=balance id="balance" size="30"></td>
+          </tr>
+          <tr>
+            <td>Credit Hours</td>
+            <td><input type="text" name=credithours id="credithours" size="30"></td>
+          </tr>
+          <tr>
+
+        </table>
+        <button type="submit">Submit</button>
+        <button type="button" onclick="closeForm()">Close</button>
+      </form>
+    </div>
   </div>
 
   <div id="PersonalInfo" class="tabcontent">
@@ -118,8 +172,6 @@ background: #fdb927;
     <p>Email: {{email}}</p>
     <p>Personal Address: {{address}}</p>
     <p>Phone Number: {{phone}}</p>
-
-
   </div>
 
   <div id="New Student" class="tabcontent">
@@ -175,11 +227,11 @@ background: #fdb927;
         </tr>
         <tr>
           <td>Password</td>
-          <td><input type="text" name="password" id="banner" size="30"></td>
+          <td><input type="text" name="password" id="password" size="30"></td>
         </tr>
         <tr>
           <td>Balance</td>
-          <td>$<input type="text" name="balance" id="banner" size="30"></td>
+          <td>$<input type="text" name="balance" id="new_balance" size="30"></td>
         </tr>
         <tr>
           <td><input type="reset"></td>
@@ -202,6 +254,28 @@ background: #fdb927;
       }
       document.getElementById(instructorTab).style.display = "block";
       evt.currentTarget.className += " active";
+    }
+
+    function openForm(click_id) {
+       
+      document.getElementById("myForm").style.display = "block";
+      id = click_id.slice(-1);
+      banner = document.getElementById("banner"+id);
+      first = document.getElementById("first"+id);
+      last = document.getElementById("last"+id);
+      gpa = document.getElementById("gpa"+id);
+      balance = document.getElementById("balance"+id);
+      credit = document.getElementById("credit"+id);
+      document.getElementById('popFirst').value = first.innerText;
+      document.getElementById('poplast').value = last.innerText;
+      document.getElementById('popBanner').value = banner.innerText;
+      document.getElementById('gpa').value = gpa.innerText;
+      document.getElementById('credithours').value = credit.innerText;
+      document.getElementById('balance').value = balance.innerText.substr(1);
+    }
+
+    function closeForm() {
+      document.getElementById("myForm").style.display = "none";
     }
 
     function validate() {
@@ -269,6 +343,25 @@ background: #fdb927;
         alert("Please enter your Date of Birth!");
         document.StudentRegistration.dob.focus();
         return false;
+      }
+
+      function validateUpdate() {
+        if (document.studentUpdating.gpa.value == "") {
+          alert("Please enter Students New GPA");
+          document.studentUpdating.gpa.focus();
+          return false;
+        }
+        if (document.studentUpdating.balance.value == "") {
+          alert("Please enter Students New Balance");
+          document.studentUpdating.balance.focus();
+          return false;
+        }
+        if (document.studentUpdating.address.value == "") {
+          alert("Please enter Students New Credit Hours");
+          document.studentUpdating.creditHours.focus();
+          return false;
+        }
+        return (true);
       }
 
       return (true);

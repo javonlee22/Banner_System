@@ -49,12 +49,26 @@ background: #fdb927;
   border: 1px solid #ccc;
   border-top: none;
 }
+.form-popup {
+  display: none;
+  position: fixed;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+  bottom:200px;
+  background-color: #004684;
+  color: white;
+}
 .hide{
   display:none;
 }
 .show{
   display:block;
 }
+table, th, td{
+  border: 1px solid #004684;
+}
+
 
 </style>
   <title> Student </title>
@@ -63,6 +77,7 @@ background: #fdb927;
 <body>
 
   <h2>Welcome {{first}} {{last}}</h2>
+  <h3>Last Login: {{time}}</h3>
 
   <div class="tab">
     <button id="button" class="tablinks" onclick="studentTab(event, 'Courses')">Courses</button>
@@ -90,24 +105,55 @@ background: #fdb927;
       </tr>
       {% endfor %}
     </table>
+
   </div>
 
   <div id="PersonalInfo" class="tabcontent">
-    <p>Banner ID: {{banner}}</p>
-    <p>First Name: {{first}}</p>
-    <p>Last Name: {{last}}</p>
-    <form method="post">
-      Personal Address: {{address}}
-      <input type="button" name="address" value="Update" onclick="onAddressClick()" />
-      <input class="hide" type="text" id="addressInput" value="" />
-      <!--<input class="hide" type="submit" id="addressInput" value="Submit">-->
-      <p>Email: {{email}}</p>
-
-      Phone Number: {{phone}}
-      <input type="button" name="number" value="Update" onclick="onNumberClick()" />
-      <input class="hide" type="text" id="phoneInput" value="" />
-      <!--<input class="hide" type="submit" id="phoneInput" value="Submit">-->
-    </form>
+    <b>Banner ID: </b><p id="banner">{{banner}}</p>
+    <b>First Name: </b><p id="first">{{first}}</p>
+    <b>Last Name: </b><p id="last">{{last}}</p>
+    <b>Address: </b><p id="address">{{address}}</p>
+    <b>City: </b><p id="city">{{city}}</p>
+    <b>State: </b><p id="state">{{state}}</p>
+    <b>Zip-Code: </b><p id="zip">{{zip_code}}</p>
+    <b>Email: </b><p id="email">{{email}}</p>
+    <b>Phone Number: </b><p id="phone">{{phone}}</p>
+    <button class="open-button" id="edit" onclick="openForm()">Edit</button>
+    <div class="form-popup" id="myForm">
+      <form action="/student_update" name="studentUpdating" onsubmit="return(validateUpdate());" method="post">
+        <table id="table">
+          <tr>
+            <td colspan=2>
+              <center>
+                <font size=4><b>Edit Student</b></font>
+              </center>
+            </td>
+          </tr>
+          <tr>
+            <td>Address</td>
+            <td><input type="text" name=popAddress id="popAddress" size="30" ></td>
+          </tr>
+          <tr>
+            <td>City</td>
+            <td><input type="text" name=popCity id="popCity" size="30" ></td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td><input type="text" name=popState id="popState" size="30" ></td>
+          </tr>
+          <tr>
+            <td>Zip-Code</td>
+            <td><input type="text" name=zip id="zip_code" size="30"></td>
+          </tr>
+          <tr>
+            <td>Phone Number</td>
+            <td><input type="text" name=popPhone id="popPhone" size="30"></td>
+          </tr>
+        </table>
+        <button type="submit">Submit</button>
+        <button type="button" onclick="closeForm()">Close</button>
+      </form>
+    </div>
   </div>
 
   <div id="BalanceInfo" class="tabcontent">
@@ -120,6 +166,25 @@ background: #fdb927;
   </div>
 
   <script>
+    function openForm() {
+
+      document.getElementById("myForm").style.display = "block";
+      address = document.getElementById("address");
+      city = document.getElementById("city");
+      state = document.getElementById("state");
+      zip = document.getElementById("zip");
+      phone = document.getElementById("phone")
+      document.getElementById("popAddress").value = address.innerText;
+      document.getElementById("popCity").value = city.innerText;
+      document.getElementById("popState").value = state.innerText;
+      document.getElementById("zip_code").value = zip.innerText;
+      document.getElementById("popPhone").value = phone.innerText;
+    }
+
+    function closeForm() {
+      document.getElementById("myForm").style.display = "none";
+    }
+
     function studentTab(evt, studTab) {
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");
