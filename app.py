@@ -77,6 +77,8 @@ def login():
             #Sets the banner ID and isFaculty flag of the session in the form of a cookie
             session['user'] = user.banner
             session['isFaculty'] = user.isFaculty
+            #Creates a timestamp of the login request
+            session['lastLogin'] = datetime.now()
             #Redirects to the dashboard 
             return redirect(url_for('dashboard'))
         else:
@@ -90,23 +92,25 @@ def dashboard():
     if 'user' in session:
         isFaculty = session['isFaculty']
         banner = session['user']
+        timestamp = session['lastLogin']
+        update = None
+        if 'lastUpdate' in session:
+            update = session['lastUpdate']
         user = User.query.filter_by(banner=banner).first()
-        #Creates a timestamp of the login request
-        now = datetime.now()
         #Renders the student and instructor page depending on the isFaculty flag
         if isFaculty:
             #Queries all student users
             students = User.query.filter_by(isFaculty=False)
             #Renders the instructor page
             return render_template('instructor.html',first=user.first_name,last=user.last_name,banner=user.banner,
-                email=user.email,address=user.address,phone=user.phone_number,students=students,time=now)
+                email=user.email,address=user.address,phone=user.phone_number,students=students,time=timestamp,update=update)
         else:
             #Queries all faculty users
             professors = User.query.filter_by(isFaculty=True)
             #Renders the student page
             return render_template('student.html',first=user.first_name,last=user.last_name,banner=banner,
                 address=user.address,email=user.email,phone=user.phone_number,balance=user.balance,professors=professors,
-                city=user.city,zip_code=user.zip_code,state=user.state,time=now)
+                city=user.city,zip_code=user.zip_code,state=user.state,time=timestamp,update=update)
 
 #Create student route the handles requests to create student accounts
 @app.route('/create_student', methods=['POST'])
@@ -148,6 +152,8 @@ def student_update():
     if 'user' in session:
         #Proccesses form data from request
         banner = session['user']
+        #Generates update timestamp
+        session['lastUpdate'] = datetime.now()
         address = request.form['popAddress']
         city = request.form['popCity']
         state = request.form['popState']
@@ -176,6 +182,8 @@ def instructor_update():
         gpa = request.form['gpa']
         balance = request.form['balance']
         credit = request.form['credithours']
+        #Generates update timestamp
+        session['lastUpdate'] = datetime.now()
         #Queries the database
         user = User.query.filter_by(banner=banner).first()
         #Updates the fields of the User object
@@ -184,5 +192,5 @@ def instructor_update():
         user.credit_hours = credit
         #Commits the update to the database
         db.session.commit()
-         #Refreshes the page
+        #Refreshes the page
         return redirect(url_for('dashboard'))

@@ -119,6 +119,7 @@ table, th, td{
     <b>Email: </b><p id="email">{{email}}</p>
     <b>Phone Number: </b><p id="phone">{{phone}}</p>
     <button class="open-button" id="edit" onclick="openForm()">Edit</button>
+    <p>Last Update :  {{update}}</p>
     <div class="form-popup" id="myForm">
       <form action="/student_update" name="studentUpdating" onsubmit="return(validateUpdate());" method="post">
         <table id="table">
