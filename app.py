@@ -5,6 +5,8 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 import os
 
+
+
 app = Flask(__name__)
 #Connection to the MySQL database instance              #<username>:<password>
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:goaggiepride22@localhost:3306/banner_system'
@@ -83,6 +85,11 @@ def login():
         else:
             #Returns rejection response
             return '<h1>Invalid Banner/Password</h1><br/><h3>Please Go Back to Retry</h3>'
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 #Dashboard route that renders the dashboard page
 @app.route('/dashboard')
@@ -193,3 +200,6 @@ def instructor_update():
         db.session.commit()
         #Refreshes the page
         return redirect(url_for('dashboard'))
+
+if __name__ == '__main__':
+    app.run(ssl_context=('cert.pem', 'key.pem'),debug=True)

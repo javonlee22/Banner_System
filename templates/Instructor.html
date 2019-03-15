@@ -88,6 +88,9 @@ background: #fdb927;
 
   <h2>Dr. {{last}}</h2>
   <h3>Last Login: {{time}}</h3>
+  <form method="post" action="/logout">
+    <input type="submit" value="Log Out"/>
+  </form>
 
   <div class="tab">
     <button id="button" class="tablinks" onclick="instructTab(event, 'Courses')">Active Students</button>
@@ -233,6 +236,14 @@ background: #fdb927;
         <tr>
           <td>Balance</td>
           <td>$<input type="text" name="balance" id="new_balance" size="30"></td>
+        </tr>
+        <tr>
+            <td>GPA</td>
+            <td><input type="text" name="gpa" id="GPA" size="30"></td>
+          </tr>
+        <tr>
+          <td>Credit Hours</td>
+          <td><input type="text" name="credit_hours" id="credit" size="30"></td>
         </tr>
         <tr>
           <td><input type="reset"></td>

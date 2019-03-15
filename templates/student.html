@@ -78,6 +78,9 @@ table, th, td{
 
   <h2>Welcome {{first}} {{last}}</h2>
   <h3>Last Login: {{time}}</h3>
+  <form method="post" action="/logout">
+    <input type="submit" value="Log Out"/>
+  </form>
 
   <div class="tab">
     <button id="button" class="tablinks" onclick="studentTab(event, 'Courses')">Courses</button>
