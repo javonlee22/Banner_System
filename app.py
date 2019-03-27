@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify,render_template,redirect,url_for,session
+from flask_bcrypt import Bcrypt
+from werkzeug.security import generate_password_hash,check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.exc import IntegrityError
@@ -11,6 +13,8 @@ app = Flask(__name__)
 #Connection to the MySQL database instance              #<username>:<password>
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:goaggiepride22@localhost:3306/banner_system'
 db = SQLAlchemy(app)
+#Encryption Class
+bcrypt = Bcrypt(app)
 #Creates a random secret key for encryption
 app.secret_key = os.urandom(24)
 
@@ -74,7 +78,7 @@ def login():
     #Continues if there is a query result
     if user:
         #Checks the password
-        if user.password == password:
+        if check_password_hash(user.password, password):
             #Sets the banner ID and isFaculty flag of the session in the form of a cookie
             session['user'] = user.banner
             session['isFaculty'] = user.isFaculty
@@ -121,35 +125,39 @@ def dashboard():
 #Create student route the handles requests to create student accounts
 @app.route('/create_student', methods=['POST'])
 def create_student():
-    #Takes on the form data from the request
-    banner = request.form['banner']
-    first = request.form['first_name']
-    last = request.form['last_name']
-    address = request.form['address']
-    city = request.form['city']
-    state = request.form['state']
-    zip_code = request.form['zip_code']
-    email = request.form['email']
-    phone = request.form['phone_number']
-    dob = request.form['dob']
-    password = request.form['password']
-    balance = request.form['balance']
-    gpa = request.form['gpa']
-    credit_hours = request.form['credit_hours']
-    try:
-        #Creates a new User Object
-        user = User(first,last,banner,password,False,address,phone,city,email,state,zip_code,dob,balance,gpa,credit_hours)
-        #Commits the new user to the database
-        db.session.add(user)
-        db.session.commit()
-    #Catches the IntegrityError the occurs when a non-unique banner ID is entered
-    except IntegrityError:
-        #Cancels the commit to the database
-        db.session.rollback()
-        #Returns the error message
-        return "<h1>Banner already exists please go back and input a new number</h1>"
-    #Refreshes the page
-    return redirect(url_for('dashboard'))
+    if 'user' in session:
+        #Takes on the form data from the request
+        banner = request.form['banner']
+        first = request.form['first_name']
+        last = request.form['last_name']
+        address = request.form['address']
+        city = request.form['city']
+        state = request.form['state']
+        zip_code = request.form['zip_code']
+        email = request.form['email']
+        phone = request.form['phone_number']
+        dob = request.form['dob']
+        password = request.form['password']
+        pw_hash = generate_password_hash(password)
+        balance = request.form['balance']
+        gpa = request.form['gpa']
+        credit_hours = request.form['credit_hours']
+        try:
+            #Creates a new User Object
+            user = User(first,last,banner,pw_hash,False,address,phone,city,email,state,zip_code,dob,balance,gpa,credit_hours)
+            #Commits the new user to the database
+            db.session.add(user)
+            db.session.commit()
+        #Catches the IntegrityError the occurs when a non-unique banner ID is entered
+        except IntegrityError:
+            #Cancels the commit to the database
+            db.session.rollback()
+            #Returns the error message
+            return "<h1>Banner already exists please go back and input a new number</h1>"
+        #Refreshes the page
+        return redirect(url_for('dashboard'))
+    else:
+        return redirect(url_for('index'))
 
 #Student Update route that handles student requests to update their personal information
 @app.route('/student_update', methods=['POST'])
@@ -165,6 +173,8 @@ def student_update():
         state = request.form['popState']
         zip_code = request.form['zip']
         phone = request.form['popPhone']
+        password = request.form['password']
+        pw_hash = generate_password_hash(password)
         #Queries the database
         user = User.query.filter_by(banner=banner).first()
         #Updates the fields of the User object
@@ -173,6 +183,7 @@ def student_update():
         user.state = state
         user.zip_code = zip_code
         user.phone_number = phone
+        user.password = pw_hash
         #Commits the update to the database
         db.session.commit()
         #Refreshes the page
