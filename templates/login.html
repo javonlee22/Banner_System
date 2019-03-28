@@ -7,33 +7,36 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <!-- <link rel="stylesheet" href="style.css" /> -->
   <style>
-      body{
-        background-color: #004684;
-      }
+    body {
+      background-color: #004684;
+    }
+
     #border {
-        /*margin: auto;*/
-        position: fixed;
-        top: 50%;
-        left: 50%;
-       margin-top: -100px;
-        margin-left: -100px;
-        padding: 50px;
-        border-radius: 15px;
-        background: #fdb927;
+      /*margin: auto;*/
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      margin-top: -100px;
+      margin-left: -100px;
+      padding: 50px;
+      border-radius: 15px;
+      background: #fdb927;
     }
-    #form{
-       color:#50309b;
-        text-align:center;
+
+    #form {
+      color: #50309b;
+      text-align: center;
     }
+
     #test {
-        color: gray;
+      color: gray;
     }
-    </style>
+  </style>
 </head>
 
 <body>
   <div id="border">
-    <form id="form" method="post" action="/login">
+    <form id="form" method="post" onSubmit="return(validateSubmit());" action="/login">
       <br>Banner ID: <br>
       <input type="text" name="banner">
       <br>Password: <br>
@@ -44,3 +47,17 @@
 </body>
 
 </html>
+<script>
+  function validateSubmit() {
+    var x = document.forms["form"]["banner"].value;
+    if (x == "" || isNaN(x) || x.length != 9) {
+      alert("Banner ID must be filled out");
+      return false;
+    }
+    var y = document.forms["form"]["password"].value;
+    if (y == "" || y.length < 6) {
+      alert("Password must be filled out and be at least 6 characters long");
+      return false;
+    }
+  }
+</script>

@@ -212,5 +212,9 @@ def instructor_update():
         #Refreshes the page
         return redirect(url_for('dashboard'))
 
+def hash(password):
+    print(generate_password_hash(password))
+
 if __name__ == '__main__':
     app.run(ssl_context=('cert.pem', 'key.pem'),debug=True)
+    #hash('helloworld')

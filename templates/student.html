@@ -7,7 +7,6 @@
     body {
 font-family: Arial;
 background: #fdb927;
-
 }
 /* Style the tab */
 .tab {
@@ -15,7 +14,6 @@ background: #fdb927;
   border: 1px solid #ccc;
   background-color: #004684;
 }
-
 /* Style the buttons inside the tab */
 #button {
   color: white;
@@ -28,19 +26,14 @@ background: #fdb927;
   transition: 0.3s;
   font-size: 17px;
 }
-
-
-
 /* Change background color of buttons on hover */
 .tab button:hover {
   background-color: #ddd;
 }
-
 /* Create an active/current tablink class */
 .tab button.active {
   background-color: #ccc;
 }
-
 /* Style the tab content */
 .tabcontent {
   background-color: white;
@@ -68,8 +61,6 @@ background: #fdb927;
 table, th, td{
   border: 1px solid #004684;
 }
-
-
 </style>
   <title> Student </title>
 </head>
@@ -175,7 +166,6 @@ table, th, td{
 
   <script>
     function openForm() {
-
       document.getElementById("myForm").style.display = "block";
       address = document.getElementById("address");
       city = document.getElementById("city");
@@ -188,11 +178,47 @@ table, th, td{
       document.getElementById("zip_code").value = zip.innerText;
       document.getElementById("popPhone").value = phone.innerText;
     }
+	function validateUpdate() {
+    if (document.studentUpdating.popAddress.value == "") {
+        alert("Please enter your address!");
+        document.studentUpdating.popAddress();
+        return false;
+    }
+    if (document.studentUpdating.popCity.value == "") {
+        alert("Please enter your city!");
+      	document.studentUpdating.popCity.focus();
+        return false;
+    }
+	if (document.studentUpdating.popState.value == "") {
+        alert("Please enter your state!");
+        document.studentUpdating.popState.focus();
+        return false;
+    }
+    if (document.studentUpdating.zip_code.value == "" || isNaN(document.studentUpdating.zip_code.value) || document.studentUpdating.zip_code.value.length != 5)
+    {
+        //alert("Please enter your zip code!");
+        alert(document.studentUpdating.zip_code.value)
+        document.studentUpdating.zip_code.focus();
+        return false;
+    }
+    if (document.studentUpdating.popPhone.value == "" || isNaN(document.studentUpdating.popPhone.value) || document.studentUpdating.popPhone.value.length != 10)
+    {
+        alert("Please enter your phone number!");
+      	document.studentUpdating.popPhone.focus();
+        return false;
+    }
+	if (document.studentUpdating.password.value == "" || document.studentUpdating.password.length < 6)  
+	{
+        alert("Please enter your state!");
+        document.studentUpdating.password.focus();
+        return false;
+    }
+        return (true);
+}
 
     function closeForm() {
       document.getElementById("myForm").style.display = "none";
     }
-
     function studentTab(evt, studTab) {
       var i, tabcontent, tablinks;
       tabcontent = document.getElementsByClassName("tabcontent");
@@ -206,11 +232,9 @@ table, th, td{
       document.getElementById(studTab).style.display = "block";
       evt.currentTarget.className += " active";
     }
-
     function onAddressClick() {
       document.getElementById('addressInput').className = "show";
     }
-
     function onNumberClick() {
       document.getElementById('phoneInput').className = "show";
     }
