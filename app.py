@@ -10,11 +10,14 @@ import os
 
 
 app = Flask(__name__)
+
 #Connection to the MySQL database instance              #<username>:<password>
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:goaggiepride22@localhost:3306/banner_system'
 db = SQLAlchemy(app)
+
 #Encryption Class
 bcrypt = Bcrypt(app)
+
 #Creates a random secret key for encryption
 app.secret_key = os.urandom(24)
 
