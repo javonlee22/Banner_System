@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.mysql import BIGINT
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
+import time
 import os
 
 
@@ -40,9 +41,10 @@ class User(db.Model):
     balance = db.Column('balance',db.Float,nullable=False)
     gpa = db.Column('GPA',db.Float,nullable=False)
     credit_hours = db.Column('credit_hours',db.Float,nullable=False)
+    timestamp = db.Column ('timestamp',db.Numeric(20,6),nullable=True)
 
 
-    def __init__(self,first_name,last_name,banner,password,isFaculty,address,phone_number,city,email,state,zip_code,dob,balance,gpa,credit_hours):
+    def __init__(self,first_name,last_name,banner,password,isFaculty,address,phone_number,city,email,state,zip_code,dob,balance,gpa,credit_hours,timestamp):
         self.first_name = first_name
         self.last_name = last_name
         self.banner = banner
@@ -58,6 +60,7 @@ class User(db.Model):
         self.balance = balance
         self.gpa = gpa
         self.credit_hours = credit_hours
+        self.timestamp = timestamp
 
 #Home route of the website that redirects to the login page or the dashboard
 @app.route('/')
@@ -85,13 +88,18 @@ def login():
             #Sets the banner ID and isFaculty flag of the session in the form of a cookie
             session['user'] = user.banner
             session['isFaculty'] = user.isFaculty
+            session['timestamp'] = user.timestamp
             #Creates a timestamp of the login request
-            session['lastLogin'] = datetime.now()
+            user.timestamp = time.time()
+            print(time.time())
+            db.session.commit()
             #Redirects to the dashboard 
             return redirect(url_for('dashboard'))
         else:
             #Returns rejection response
-            return '<h1>Invalid Banner/Password</h1><br/><h3>Please Go Back to Retry</h3>'
+            return '<h1>Invalid Banner/Password</h1><br/><a href="/">Please Go Back to Retry</a>'
+    else:
+        return '<h1>Banner ID Does Not Exist<h1><br/><a href="/">Please Go Back to Retry</a>'
 
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -105,25 +113,28 @@ def dashboard():
     if 'user' in session:
         isFaculty = session['isFaculty']
         banner = session['user']
-        timestamp = session['lastLogin']
+        timestamp = session['timestamp']
         update = None
-        if 'lastUpdate' in session:
-            update = session['lastUpdate']
         user = User.query.filter_by(banner=banner).first()
+        if timestamp:
+            last_login = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S.%f')
+        else: last_login = None
         #Renders the student and instructor page depending on the isFaculty flag
         if isFaculty:
             #Queries all student users
             students = User.query.filter_by(isFaculty=False)
             #Renders the instructor page
             return render_template('instructor.html',first=user.first_name,last=user.last_name,banner=user.banner,
-                email=user.email,address=user.address,phone=user.phone_number,students=students,time=timestamp,update=update)
+                email=user.email,address=user.address,phone=user.phone_number,students=students,time=last_login,update=update)
         else:
             #Queries all faculty users
             professors = User.query.filter_by(isFaculty=True)
             #Renders the student page
             return render_template('student.html',first=user.first_name,last=user.last_name,banner=banner,
                 address=user.address,email=user.email,phone=user.phone_number,balance=user.balance,professors=professors,
-                city=user.city,zip_code=user.zip_code,state=user.state,time=timestamp,update=update)
+                city=user.city,zip_code=user.zip_code,state=user.state,time=last_login,update=update)
+    else: 
+        return '<h1>You are not authorized to view this page.<br/>Please proceed to the login page to sign in.</h1> <a href="/">Log In</a>'
 
 #Create student route the handles requests to create student accounts
 @app.route('/create_student', methods=['POST'])
@@ -147,7 +158,7 @@ def create_student():
         credit_hours = request.form['credit_hours']
         try:
             #Creates a new User Object
-            user = User(first,last,banner,pw_hash,False,address,phone,city,email,state,zip_code,dob,balance,gpa,credit_hours)
+            user = User(first,last,banner,pw_hash,False,address,phone,city,email,state,zip_code,dob,balance,gpa,credit_hours,None)
             #Commits the new user to the database
             db.session.add(user)
             db.session.commit()
@@ -160,7 +171,7 @@ def create_student():
         #Refreshes the page
         return redirect(url_for('dashboard'))
     else:
-        return redirect(url_for('index'))
+        return '<h1>You are not authorized to view this page.<br/>Please proceed to the login page to sign in.</h1> <a href="/">Log In</a>'
 
 #Student Update route that handles student requests to update their personal information
 @app.route('/student_update', methods=['POST'])
@@ -177,6 +188,7 @@ def student_update():
         zip_code = request.form['zip']
         phone = request.form['popPhone']
         password = request.form['password']
+        #Generates hash of the password
         pw_hash = generate_password_hash(password)
         #Queries the database
         user = User.query.filter_by(banner=banner).first()
@@ -191,6 +203,8 @@ def student_update():
         db.session.commit()
         #Refreshes the page
         return redirect(url_for('dashboard'))
+    else:
+        return '<h1>You are not authorized to view this page.<br/>Please proceed to the login page to sign in.</h1> <a href="/">Log In</a>'
 
 #Instructor update route that allows faculty to update student academic information
 @app.route('/instructor_update', methods=['POST'])
@@ -214,10 +228,8 @@ def instructor_update():
         db.session.commit()
         #Refreshes the page
         return redirect(url_for('dashboard'))
-
-def hash(password):
-    print(generate_password_hash(password))
+    else:
+        return '<h1>You are not authorized to view this page.<br/>Please proceed to the login page to sign in.</h1> <a href="/">Log In</a>'
 
 if __name__ == '__main__':
     app.run(ssl_context=('cert.pem', 'key.pem'),debug=True)
-    #hash('helloworld')

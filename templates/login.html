@@ -4,8 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width" />
   <title>Login</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <!-- <link rel="stylesheet" href="style.css" /> -->
   <style>
     body {
       background-color: #004684;
@@ -31,10 +29,15 @@
     #test {
       color: gray;
     }
+
+    #title{
+      color:#fdb927;
+    }
   </style>
 </head>
 
 <body>
+  <h1 id="title">Banner System Login</h1>
   <div id="border">
     <form id="form" method="post" onSubmit="return(validateSubmit());" action="/login">
       <br>Banner ID: <br>
@@ -51,7 +54,7 @@
   function validateSubmit() {
     var x = document.forms["form"]["banner"].value;
     if (x == "" || isNaN(x) || x.length != 9) {
-      alert("Banner ID must be filled out");
+      alert("Must Enter Valid Banner ID");
       return false;
     }
     var y = document.forms["form"]["password"].value;
