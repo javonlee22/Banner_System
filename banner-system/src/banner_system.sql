@@ -27,7 +27,7 @@ CREATE TABLE `users` (
   `first_name` varchar(20) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `banner` int(15) NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` varchar(200) NOT NULL,
   `isFaculty` tinyint(4) NOT NULL,
   `address` varchar(45) NOT NULL,
   `phone_number` bigint(30) NOT NULL,
@@ -39,9 +39,10 @@ CREATE TABLE `users` (
   `balance` decimal(10,2) NOT NULL,
   `GPA` float NOT NULL,
   `credit_hours` float NOT NULL,
+  `timestamp` decimal(20,6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `banner_UNIQUE` (`banner`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,7 +51,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Javon','Lee',950305907,'javon1996',0,'610 S Chapman St',3092512286,'Greensboro','jmlee123@aggies.ncat.edu','NC',27401,'01/23/1996',23343.94,4,120),(2,'Peter','Griffin',555555555,'qwerty123',1,'1601 East Market Street',5555555555,'Greensboro','grifin@ncat.edu','NC',27411,'01/12/1967',0.00,0,0),(3,'Langston','Dennis',123456789,'hello',0,'123 Fake Drive',123456789,'Greensboro','dennis@ncat.edu','NC',27403,'2019-02-04',30000.00,3,94),(5,'TEST','TESTING',222222222,'test',0,'THIS IS A TEST',5555555555,'Greensboro','test@test.com','NC',27403,'2018-11-12',15000.00,2.5,108);
+INSERT INTO `users` VALUES (9,'Tony','Stark',111111111,'pbkdf2:sha256:50000$ZvMLtD8p$83dbc51b8a532e403ae2ce216e6402a70a5c981810f1321fbe3d1b8279c58e98',1,'1601 East Market Street',5555555555,'Greensboro','stark@avengers.com','NC',27411,'1/22/1968',0.00,0,0,1556129443.717460),(10,'Test','Sample',222222222,'pbkdf2:sha256:50000$ciXG82z9$83362178acb0b93c910de2f66f1cdac0aaf0a3c5af2ab8f6760300672c6987ac',0,'1601 East Market Street',3092512286,'Greensboro','sample@test.com','NC',27401,'2019-03-27',12555.00,3.75,95.5,1556127360.000000),(11,'Langston','Dennis',123456789,'pbkdf2:sha256:50000$ncjAUGZK$024a05be53b9729a25ee07895d0ad2ba63d7b0c42a69d747116e54d314dcc27c',0,'1234 Fake Drive',1111111111,'Raleigh','dennis@ncat.edu','NC',27403,'2019-04-24',10500.00,3.5,27,1556128237.929980),(12,'demo','demo',123456788,'pbkdf2:sha256:50000$cRaOHVpg$24ade3fb86dd090024cde229a7d9a9cd57cd88163279ef3d1217961e78cfa48a',0,'123 Fake Drive',1111111111,'Greensboro','dennis@ncat.edu','NC',27403,'2019-04-24',100000.00,3,24.5,1556129546.607530);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -63,4 +64,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-02 17:28:41
+-- Dump completed on 2019-04-26 15:13:45
